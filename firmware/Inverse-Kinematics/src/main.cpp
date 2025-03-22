@@ -15,6 +15,7 @@ size_t readSerialBufferIndex = 0;
 
 char *readSerial();
 void moveCartesian(char, int);
+void reportCartesian();
 
 void setup()
 {
@@ -29,13 +30,14 @@ void setup()
   Serial.println("Setup complete");
   Serial.println();
   Serial.println("Serial commands supported:");
-  Serial.println("  <axis> <coordinate> - move the arm to coordinate, for example:");
+  Serial.println("  <axis> <coordinate> - move the arm to cartesian coordinate, for example:");
   Serial.println("    X 0");
   Serial.println("    Y 100");
   Serial.println("    Z 50");
   Serial.println("  OPEN - open the claw");
   Serial.println("  CLOSE - close the claw");
-  Serial.println("  RESET - move the arm to default coordinates");
+  Serial.println("  CARTESIAN - report current cartesian coordinates");
+  Serial.println("  RESET - move the arm to default cartesian coordinates");
   Serial.println();
 }
 
@@ -61,11 +63,15 @@ void loop()
       // arm.closeClaw();
       Serial.println("Claw closed");
     }
+    else if (strcmp(input, "CARTESIAN") == 0)
+    {
+      reportCartesian();
+    }
     else if (strcmp(input, "RESET") == 0)
     {
       arm.gotoPoint(0, 100, 50);
       // arm.moveToXYZ(0, 100, 50);
-      Serial.println("Arm moved to default coordinates: X = 0, Y = 100, Z = 50");
+      Serial.println("Arm moved to default cartesian coordinates: X = 0, Y = 100, Z = 50");
     }
     else
     {
@@ -161,7 +167,7 @@ void moveCartesian(char axis, int coordinate)
     z = coordinate;
     break;
   default:
-    Serial.println("Unknown axis");
+    Serial.println("Unknown cartesian axis");
     return;
   }
 
@@ -194,4 +200,18 @@ void moveCartesian(char axis, int coordinate)
   {
     Serial.println(" - but these were calculated as unreachable");
   }
+}
+
+void reportCartesian()
+{
+  float x = arm.getX(),
+        y = arm.getY(),
+        z = arm.getZ();
+
+  Serial.print("Arm cartesian coordinates: X = ");
+  Serial.print(x);
+  Serial.print(", Y = ");
+  Serial.print(y);
+  Serial.print(", Z = ");
+  Serial.println(z);
 }
