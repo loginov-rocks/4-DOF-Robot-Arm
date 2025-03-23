@@ -14,8 +14,11 @@ char readSerialBuffer[readSerialBufferSize];
 size_t readSerialBufferIndex = 0;
 
 char *readSerial();
+
 void moveCartesian(char, int);
+void moveCylindrical(char, int);
 void reportCartesian();
+void reportCylindrical();
 
 void setup()
 {
@@ -30,14 +33,20 @@ void setup()
   Serial.println("Setup complete");
   Serial.println();
   Serial.println("Serial commands supported:");
-  Serial.println("  <axis> <coordinate> - move the arm to cartesian coordinate, for example:");
-  Serial.println("    X 0");
-  Serial.println("    Y 100");
-  Serial.println("    Z 50");
+  Serial.println("  <dimension> <coordinate> - move the arm along the specified dimension, for example:");
+  Serial.println("    Cartesian coordinates:");
+  Serial.println("      X 0    - left/right");
+  Serial.println("      Y 100  - forward/backward");
+  Serial.println("      Z 50   - up/down");
+  Serial.println("   Cylindrical coordinates:");
+  Serial.println("      T 0    - base rotation angle in degrees");
+  Serial.println("      R 100  - radius from the center");
+  Serial.println("      Note: Z command moves the arm in cartesian coordinates");
   Serial.println("  OPEN - open the claw");
   Serial.println("  CLOSE - close the claw");
   Serial.println("  CARTESIAN - report current cartesian coordinates");
-  Serial.println("  RESET - move the arm to default cartesian coordinates");
+  Serial.println("  CYLINDRICAL - report current cylindrical coordinates");
+  Serial.println("  RESET - move the arm to default coordinates");
   Serial.println();
 }
 
@@ -67,31 +76,46 @@ void loop()
     {
       reportCartesian();
     }
+    else if (strcmp(input, "CYLINDRICAL") == 0)
+    {
+      reportCylindrical();
+    }
     else if (strcmp(input, "RESET") == 0)
     {
-      arm.gotoPoint(0, 100, 50);
-      // arm.moveToXYZ(0, 100, 50);
-      Serial.println("Arm moved to default cartesian coordinates: X = 0, Y = 100, Z = 50");
+      // The default coordinates used here (0, 100, 50) match the library's default position when initialized.
+      arm.gotoPointCylinder(0, 100, 50);
+      // arm.moveTo(0, 100, 50);
+      Serial.println("Arm moved to default cylindrical coordinates: T = 0°, R = 100, Z = 50");
     }
     else
     {
-      char axis; // Should be large enough to accommodate the axis name.
+      char dimension; // Should be large enough to accommodate the dimension name.
       int coordinate;
 
-      if (sscanf(input, "%c %d", &axis, &coordinate) == 2)
+      if (sscanf(input, "%c %d", &dimension, &coordinate) == 2)
       {
-        if (axis == 'X' || axis == 'Y' || axis == 'Z')
+        if (dimension == 'X' || dimension == 'Y' || dimension == 'Z')
         {
           Serial.print("Moving arm to ");
-          Serial.print(axis);
+          Serial.print(dimension);
           Serial.print(" = ");
           Serial.println(coordinate);
 
-          moveCartesian(axis, coordinate);
+          moveCartesian(dimension, coordinate);
+        }
+        else if (dimension == 'T' || dimension == 'R')
+        {
+          // TODO
+          Serial.print("Moving arm to ");
+          Serial.print(dimension);
+          Serial.print(" = ");
+          Serial.println(coordinate);
+
+          moveCylindrical(dimension, coordinate);
         }
         else
         {
-          Serial.println("Unknown axis");
+          Serial.println("Unknown dimension");
         }
       }
       else
@@ -186,12 +210,12 @@ void moveCartesian(char axis, int coordinate)
   {
     Serial.print("tried to move");
   }
-  Serial.print(" to coordinates: X = ");
-  Serial.print(x);
+  Serial.print(" to cartesian coordinates: X = ");
+  Serial.print(x, 0);
   Serial.print(", Y = ");
-  Serial.print(y);
+  Serial.print(y, 0);
   Serial.print(", Z = ");
-  Serial.print(z);
+  Serial.print(z, 0);
   if (isReachable)
   {
     Serial.println();
@@ -202,6 +226,40 @@ void moveCartesian(char axis, int coordinate)
   }
 }
 
+void moveCylindrical(char dimension, int coordinate)
+{
+  // Get current coordinates as the library moving function requires all coordinates to be passed when invoking.
+  float t = arm.getTheta(),
+        r = arm.getR(),
+        z = arm.getZ();
+
+  switch (dimension)
+  {
+  case 'T':
+    t = coordinate;
+    break;
+  case 'R':
+    r = coordinate;
+    break;
+  case 'Z':
+    z = coordinate;
+    break;
+  default:
+    Serial.println("Unknown cylindrical dimension");
+    return;
+  }
+
+  arm.gotoPointCylinder(t, r, z);
+  // arm.moveTo(t, r, z);
+
+  Serial.print("Arm moved to cylindrical coordinates: T = ");
+  Serial.print(t, 0);
+  Serial.print("°, R = ");
+  Serial.print(r, 0);
+  Serial.print(", Z = ");
+  Serial.println(z, 0);
+}
+
 void reportCartesian()
 {
   float x = arm.getX(),
@@ -209,9 +267,23 @@ void reportCartesian()
         z = arm.getZ();
 
   Serial.print("Arm cartesian coordinates: X = ");
-  Serial.print(x);
+  Serial.print(x, 0);
   Serial.print(", Y = ");
-  Serial.print(y);
+  Serial.print(y, 0);
   Serial.print(", Z = ");
-  Serial.println(z);
+  Serial.println(z, 0);
+}
+
+void reportCylindrical()
+{
+  float t = arm.getTheta(),
+        r = arm.getR(),
+        z = arm.getZ();
+
+  Serial.print("Arm cylindrical coordinates: T = ");
+  Serial.print(t, 0);
+  Serial.print("°, R = ");
+  Serial.print(r, 0);
+  Serial.print(", Z = ");
+  Serial.println(z, 0);
 }
