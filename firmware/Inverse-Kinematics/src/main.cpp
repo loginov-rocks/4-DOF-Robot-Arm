@@ -105,11 +105,18 @@ void loop()
         }
         else if (dimension == 'T' || dimension == 'R')
         {
-          // TODO
           Serial.print("Moving arm to ");
           Serial.print(dimension);
           Serial.print(" = ");
-          Serial.println(coordinate);
+          Serial.print(coordinate);
+          if (dimension == 'T')
+          {
+            Serial.println("°");
+          }
+          else
+          {
+            Serial.println();
+          }
 
           moveCylindrical(dimension, coordinate);
         }
@@ -236,7 +243,7 @@ void moveCylindrical(char dimension, int coordinate)
   switch (dimension)
   {
   case 'T':
-    t = coordinate;
+    t = radians(coordinate);
     break;
   case 'R':
     r = coordinate;
@@ -253,7 +260,7 @@ void moveCylindrical(char dimension, int coordinate)
   // arm.moveTo(t, r, z);
 
   Serial.print("Arm moved to cylindrical coordinates: T = ");
-  Serial.print(t, 0);
+  Serial.print(degrees(t), 0);
   Serial.print("°, R = ");
   Serial.print(r, 0);
   Serial.print(", Z = ");
@@ -281,7 +288,7 @@ void reportCylindrical()
         z = arm.getZ();
 
   Serial.print("Arm cylindrical coordinates: T = ");
-  Serial.print(t, 0);
+  Serial.print(degrees(t), 0);
   Serial.print("°, R = ");
   Serial.print(r, 0);
   Serial.print(", Z = ");
