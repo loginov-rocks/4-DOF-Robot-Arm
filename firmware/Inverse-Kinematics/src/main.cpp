@@ -1,12 +1,16 @@
 #include <Arduino.h>
-#include <meArm.h>
-// #include <MeArm.h>
+// Comment the following line and uncomment the line after that to use the official MeArm library (for MeArm v3.0)
+// instead of the original library developed by the York Hackspace team (for MeArm v0.4 or v1.0). There are comments
+// across the code where you would need to do the same depending on the library you use.
+#include <meArm.h> // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+// #include <MeArm.h> // Uncomment when using the official MeArm library (MeArm v3.0).
 
-meArm arm(128, 33, -pi / 4, pi / 4,    // Base
-          135, 35, pi / 4, 3 * pi / 4, // Shoulder
-          135, 45, pi / 4, -pi / 4,    // Elbow
-          14, 41, pi / 2, 0);          // Claw
-// MeArm arm(...);
+meArm arm(                       // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+                                 // MeArm arm( // Uncomment when using the official MeArm library (MeArm v3.0).
+    128, 33, -pi / 4, pi / 4,    // Base
+    135, 35, pi / 4, 3 * pi / 4, // Shoulder
+    135, 45, pi / 4, -pi / 4,    // Elbow
+    14, 41, pi / 2, 0);          // Claw
 
 // readSerial helpers.
 const size_t readSerialBufferSize = 16; // Should be large enough to accommodate a command.
@@ -62,14 +66,14 @@ void loop()
 
     if (strcmp(input, "OPEN") == 0)
     {
-      arm.openGripper();
-      // arm.openClaw();
+      arm.openGripper(); // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+      // arm.openClaw(); // Uncomment when using the official MeArm library (MeArm v3.0).
       Serial.println("Claw opened");
     }
     else if (strcmp(input, "CLOSE") == 0)
     {
-      arm.closeGripper();
-      // arm.closeClaw();
+      arm.closeGripper(); // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+      // arm.closeClaw(); // Uncomment when using the official MeArm library (MeArm v3.0).
       Serial.println("Claw closed");
     }
     else if (strcmp(input, "CARTESIAN") == 0)
@@ -83,8 +87,8 @@ void loop()
     else if (strcmp(input, "RESET") == 0)
     {
       // The default coordinates used here (0, 100, 50) match the library's default position when initialized.
-      arm.gotoPointCylinder(0, 100, 50);
-      // arm.moveTo(0, 100, 50);
+      arm.gotoPointCylinder(0, 100, 50); // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+      // arm.moveTo(0, 100, 50);  // Uncomment when using the official MeArm library (MeArm v3.0).
       Serial.println("Arm moved to default cylindrical coordinates: T = 0°, R = 100, Z = 50");
     }
     else
@@ -202,8 +206,8 @@ void moveCartesian(char axis, int coordinate)
     return;
   }
 
-  arm.gotoPoint(x, y, z);
-  // arm.moveToXYZ(x, y, z);
+  arm.gotoPoint(x, y, z); // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+  // arm.moveToXYZ(x, y, z); // Uncomment when using the official MeArm library (MeArm v3.0).
 
   // Note: the library will still attempt to move to the specified coordinates even when isReachable() returns false.
   bool isReachable = arm.isReachable(x, y, z);
@@ -256,8 +260,8 @@ void moveCylindrical(char dimension, int coordinate)
     return;
   }
 
-  arm.gotoPointCylinder(t, r, z);
-  // arm.moveTo(t, r, z);
+  arm.gotoPointCylinder(t, r, z); // Uncomment when using the original York Hackspace team library (MeArm v0.4 or v1.0).
+  // arm.moveTo(t, r, z); // Uncomment when using the official MeArm library (MeArm v3.0).
 
   Serial.print("Arm moved to cylindrical coordinates: T = ");
   Serial.print(degrees(t), 0);

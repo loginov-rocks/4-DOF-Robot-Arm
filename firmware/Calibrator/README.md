@@ -38,12 +38,12 @@ The system provides feedback via Serial (`9600` baud by default) for all operati
 
 The following commands are supported (send them via Serial at `9600` baud by default):
 
-- `<servo_name> <angle>` - set the specific servo to given angle (0-180), for example:
-  - `Base 90`
-  - `Shoulder 45`
-  - `Elbow 120`
-  - `Claw 30`
-- `RESET` - return all servos to their default positions (configured by default).
+- `<servo_name> <angle>` - move a servo to an angle (from 0 to 180), for example:
+  - `Base 10`
+  - `Shoulder 20`
+  - `Elbow 30`
+  - `Claw 45`
+- `RESET` - move all servos to default angle.
 
 ## Classes
 
