@@ -12,7 +12,8 @@ space using either Cartesian (X, Y, Z) or Cylindrical (T, R, Z) coordinate syste
 - Position reporting in both coordinate systems.
 - Claw open/close functionality.
 - Detailed serial feedback for all operations.
-- Compatible with both the York Hackspace team library (MeArm v0.4 or v1.0) and the official MeArm library (v3.0).
+- Compatible with both the [original York Hackspace team library](https://github.com/yorkhackspace/meArm) (MeArm v0.4
+  or v1.0) and the [official MeArm library](https://github.com/MeArm/MeArm-Arduino) (v3.0).
 
 ## Hardware Requirements
 
@@ -32,8 +33,9 @@ space using either Cartesian (X, Y, Z) or Cylindrical (T, R, Z) coordinate syste
 
 This project is compatible with two different libraries implementing inverse kinematics for MeArm:
 
-1. Original York Hackspace library: works with MeArm v0.4 and v1.0 (enabled by default).
-2. Official MeArm library: configured for MeArm v3.0.
+1. [Original York Hackspace team library](https://github.com/yorkhackspace/meArm): works with MeArm v0.4 and v1.0
+   (enabled by default).
+1. [Official MeArm library](https://github.com/MeArm/MeArm-Arduino): configured for MeArm v3.0.
 
 The code contains marked comments (in
 [platformio.ini](https://github.com/loginov-rocks/4-DOF-Robot-Arm/blob/main/firmware/Inverse-Kinematics/platformio.ini) and
